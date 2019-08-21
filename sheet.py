@@ -1,11 +1,16 @@
 #
 #Google API sheet logic
 #
+import pickle
+import os.path
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
 
 def authorize():
 	###You need 'credentials.json' file from Google API inside folder
 	creds = None
-	SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+	SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 	# The file token.pickle stores the user's access and refresh tokens, and is
 	# created automatically when the authorization flow completes for the first
 	# time.
@@ -35,3 +40,15 @@ def write(sheet,sheet_cell,spreadsheet_id, value):
 	body = {'values':values}
 	result = sheet.values().update(spreadsheedId=spreadsheet_id, range=sheet_cell, valueInputOption='RAW', body=body).execute()
 	print(value+" value was written to "+sheet_cell+" cell")
+
+def find_last_empy_cell(developer_name):
+	result = sheet.values().get(spreadsheetId=spreadsheet_id,range=sheet_range).execute()
+	values = result.get('values', [])
+	#[0][0] - first is a line, second is a row
+	line_index = 0
+	for cell in rows:
+		if cell[0] == developer_name:
+			return [line_index][len(cell)]
+			break
+		else:
+			line_index+=1
