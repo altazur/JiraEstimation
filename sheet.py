@@ -15,40 +15,47 @@ def authorize():
 	# created automatically when the authorization flow completes for the first
 	# time.
 	if os.path.exists('token.pickle'):
+		print("Token exists")
 		with open('token.pickle', 'rb') as token:
 			creds = pickle.load(token)
 		# If there are no (valid) credentials available, let the user log in.
 	if not creds or not creds.valid:
 		if creds and creds.expired and creds.refresh_token:
+			print("refreshing credentials")
 			creds.refresh(Request())
-	else:
-		flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
-	creds = flow.run_local_server(port=0)
+		else:
+			print("Creating new token")
+			flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+			creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-	with open('token.pickle', 'wb') as token:
-		pickle.dump(creds, token)
+		with open('token.pickle', 'wb') as token:
+			pickle.dump(creds, token)
 	service = build('sheets', 'v4', credentials=creds)
-	print("Login succesfull")
-	return sheet = service.spreadsheets()
+	print("Google login succesfull")
+	return service.spreadsheets()
 
 def read_range(sheet,sheet_range,spreadsheet_id):
 	result = sheet.values().get(spreadsheetId=spreadsheet_id,range=sheet_range).execute()
-	return values = result.get('values', [])
+	return result.get('values', [])
 
-def write(sheet,sheet_cell,spreadsheet_id, value):
+def write(sheet,spreadsheet_id, value, developer_name):
 	values = [[str(value)]]
 	body = {'values':values}
-	result = sheet.values().update(spreadsheedId=spreadsheet_id, range=sheet_cell, valueInputOption='RAW', body=body).execute()
-	print(value+" value was written to "+sheet_cell+" cell")
+	m_range = find_last_empy_cell(sheet,spreadsheet_id,developer_name)
+	result = sheet.values().update(spreadsheetId=spreadsheet_id, range=m_range, valueInputOption='RAW', body=body).execute()
+	print(str(value)+" value was written to "+m_range+" cell")
 
-def find_last_empy_cell(developer_name):
-	result = sheet.values().get(spreadsheetId=spreadsheet_id,range=sheet_range).execute()
+def find_last_empy_cell(sheet,spreadsheet_id,developer_name):
+	result = sheet.values().get(spreadsheetId=spreadsheet_id,range='A1:Z10').execute()
+	#List for characteres association
+	cell_letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 	values = result.get('values', [])
 	#[0][0] - first is a line, second is a row
 	line_index = 0
-	for cell in rows:
-		if cell[0] == developer_name:
-			return [line_index][len(cell)]
+	row_index = 0
+	for cell in values:
+		if cell[row_index] == developer_name:
+			return str(cell_letters[line_index]+str(len(cell)))
 			break
 		else:
 			line_index+=1

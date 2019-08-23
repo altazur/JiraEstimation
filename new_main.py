@@ -4,10 +4,13 @@ import argparse
 
 def main(jiraURL, jiraLoginName, jiraPwd, developerNames, sheetId):
 	developers_names = developerNames.split(",")
+	print(developers_names)
 	sheet = authorize()
+	precision, name = get_dev_estimate_precision(jiraURL, jiraLoginName, jiraPwd, developers_names)
 	if sheetId is None:
-		print ("\n"+get_dev_estimate_precision(jiraURL, jiraLoginName, jiraPwd, developers_names))
+		print ("\n"+precision)
 	else:
+		write(sheet, sheetId, precision, name)
 		
 
 if __name__=="__main__":
