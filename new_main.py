@@ -3,7 +3,11 @@ from sheet import authorize, write
 import argparse
 
 def main(jiraURL, jiraLoginName, jiraPwd, developerNames, sheetId):
-	developers_names = developerNames.split(",")
+	try:
+		developers_names = developerNames.split(",")
+	except AttributeError:
+		print("Wrong arguments. Try --help for help")	
+		quit()
 	print(developers_names)
 	sheet = authorize()
 	precision, name = get_dev_estimate_precision(jiraURL, jiraLoginName, jiraPwd, developers_names)

@@ -50,12 +50,10 @@ def find_last_empy_cell(sheet,spreadsheet_id,developer_name):
 	#List for characteres association
 	cell_letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 	values = result.get('values', [])
-	#[0][0] - first is a line, second is a row
-	line_index = 0
-	row_index = 0
 	for cell in values:
-		if cell[row_index] == developer_name:
-			return str(cell_letters[line_index]+str(len(cell)))
+		if cell[0] == developer_name:
+			#Debug
+			print('['+cell_letters[(len(cell))]+':'+str(values.index(cell)+1)+']')
+			return str(cell_letters[(len(cell))]+str(values.index(cell)+1))
+
 			break
-		else:
-			line_index+=1
