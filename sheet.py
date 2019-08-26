@@ -38,12 +38,12 @@ def read_range(sheet,sheet_range,spreadsheet_id):
 	result = sheet.values().get(spreadsheetId=spreadsheet_id,range=sheet_range).execute()
 	return result.get('values', [])
 
-def write(sheet,spreadsheet_id, value, developer_name):
-	values = [[str(value)]]
+def write(sheet,spreadsheet_id, dev_precision, dev_name): 
+	values = [[str(dev_precision)]]
 	body = {'values':values}
-	m_range = find_last_empy_cell(sheet,spreadsheet_id,developer_name)
+	m_range = find_last_empy_cell(sheet,spreadsheet_id,dev_name)
 	result = sheet.values().update(spreadsheetId=spreadsheet_id, range=m_range, valueInputOption='RAW', body=body).execute()
-	print(str(value)+" value was written to "+m_range+" cell")
+	print(str(dev_precision)+" value was written to "+m_range+" cell")
 
 def find_last_empy_cell(sheet,spreadsheet_id,developer_name):
 	result = sheet.values().get(spreadsheetId=spreadsheet_id,range='A1:Z10').execute()

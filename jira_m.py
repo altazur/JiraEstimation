@@ -10,6 +10,7 @@ def login(url, login_name, login_pwd):
 	print("Login succesfull")
 	return jira
 
+#Return a generator
 def get_dev_estimate_precision(url, login_name, login_pwd, developer_names_list):
 	#Get project from the login method
 	jiraAPI =  login(url, login_name, login_pwd)
@@ -32,7 +33,7 @@ def get_dev_estimate_precision(url, login_name, login_pwd, developer_names_list)
 			original_estimate_sum += issue.fields.timeoriginalestimate or 0
 			timespent_sum += issue.fields.timespent or 0
 		try:
-			return (timespent_sum/original_estimate_sum, developer_name)
+			yield (timespent_sum/original_estimate_sum, developer_name)
 		except ZeroDivisionError:
 			tb = traceback.format_exc()
 			return 0
