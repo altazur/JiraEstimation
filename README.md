@@ -1,4 +1,5 @@
 Python script to obtain developers' estimation precision
+!Need credentials.json from your Google Sheet API aplication inside the project folder
 
 Usage:
 1. Help: main.py --help
