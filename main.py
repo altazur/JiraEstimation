@@ -1,46 +1,28 @@
-from jira import JIRA
-import traceback
+from jira_m import get_dev_estimate_precision
+from sheet import authorize, write
+import argparse
 
-#Method return the precision of estimation of given project and release
-def get_dev_estimate_precision(project_id, last_release_id, developer_name):
-	original_estimate_sum = 0
-	timespent_sum=0
-	#Search returns 50 items. maxResult arg can exceed it. For now we don't use maxResult cuz 50 is more than enough
-	developer_issues = jira.search_issues("project ="+fot_project_id+" AND fixVersion="+last_release_id+" AND assignee='"+developer_name+"'")
-	for issue in developer_issues:
-		original_estimate_sum += issue.fields.timeoriginalestimate or 0
-		timespent_sum += issue.fields.timespent or 0
+def main(jiraURL, jiraLoginName, jiraPwd, developerNames, sheetId):
 	try:
-		return timespent_sum/original_estimate_sum
-	except ZeroDivisionError:
-		tb = traceback.format_exc()
-		return 0
+		developers_names = developerNames.split(",")
+	except AttributeError:
+		print("Wrong arguments. Try --help for help")	
+		quit()
+	print(developers_names)
+	sheet = authorize()
+	precision_name_gener = get_dev_estimate_precision(jiraURL, jiraLoginName, jiraPwd, developers_names)
+	if sheetId is None:
+		print ("\n"+precision)
+	else:
+		[write(sheet, sheetId, dev_prec[0], dev_prec[1]) for dev_prec in precision_name_gener]
 
-login_name = input("JIRA login:" )
-login_pwd = input("JIRA password: ")
-###
-### Main flow
-###
-#Login
-try:
-	jira = JIRA(options={'server':'https://jira.web100.com.ua'}, basic_auth=(login_name, login_pwd))
-except ConnectionError:
-	print("ConnectionError")
-
-print("Login succesfull")
-
-#Getting the project
-fot_project = jira.project('FOT')
-#Gettin project_id
-fot_project_id = fot_project.id
-#Getting the last release id
-last_release_id = fot_project.raw['versions'][len(fot_project.raw['versions'])-1]['id']
-#Getting list of developers
-developers_list = input("Enter developer name. You also can enter several names separated by comma\n").split(",")
-for developer_name in developers_list:
-	try:
-		print(developer_name+" percision is: "+str(get_dev_estimate_precision(fot_project_id, last_release_id, developer_name)))
-	except NameError:
-		tb = traceback.format_exc()
-		print("Project, release or name are not found")
-		break
+if __name__=="__main__":
+	parser = argparse.ArgumentParser(description="Takes the developer estimation precision from given jira url and writes it to the given GoogleSheet")
+	parser.add_argument("--jiraURL", type=str)
+	parser.add_argument("--developerNames", type=str)
+	parser.add_argument("--sheetId", type=str)
+	parser.add_argument("--jiraLoginName", type=str)
+	parser.add_argument("--jiraPwd", type=str)
+	args = parser.parse_args()
+	#Call main method with all arguments
+	main(args.jiraURL, args.jiraLoginName, args.jiraPwd, args.developerNames, args.sheetId)

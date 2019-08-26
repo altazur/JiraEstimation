@@ -1,15 +1,10 @@
 Python script to obtain developers' estimation precision
-Works only on specific jira instance (its hardcoded for a now)
 
-Instructions:
-1. Enter jira login (must be an administrator)
-2. Enter jira password
-3. Enter developers' names separated by commas without extra spaces
-4. Enjoy the result
+Usage:
+1. Help: main.py ---help
+2. Cosole output: main.py --jiraURL https://example.com --developerName 'Goerge Doe,Jim Doe' --sheetId 1121EXAMPLE1231 --jiraLoginName your.login --jiraPwd passwords
 
 Dependencies:
 1. jira
 2. traceback
-
-TODO:
-1. Integration with Google Sheet (for the results fixation)
+3. Google Sheet API
