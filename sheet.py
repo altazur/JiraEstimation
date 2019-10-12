@@ -39,7 +39,7 @@ def read_range(sheet,sheet_range,spreadsheet_id):
 	return result.get('values', [])
 
 def write(sheet,spreadsheet_id, dev_precision, dev_name): 
-	values = [[str(dev_precision)]]
+	values = [[str(dev_precision).replace('.', ',')]]
 	body = {'values':values}
 	m_range = find_last_empy_cell(sheet,spreadsheet_id,dev_name)
 	result = sheet.values().update(spreadsheetId=spreadsheet_id, range=m_range, valueInputOption='RAW', body=body).execute()

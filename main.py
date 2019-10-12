@@ -12,7 +12,8 @@ def main(jiraURL, jiraLoginName, jiraPwd, developerNames, sheetId):
 	sheet = authorize()
 	precision_name_gener = get_dev_estimate_precision(jiraURL, jiraLoginName, jiraPwd, developers_names)
 	if sheetId is None:
-		print ("\n"+precision)
+        	for i in precision_name_gener:
+                     print ("\n"+str(i[0]).replace('.', ',')+str(i[1]))
 	else:
 		[write(sheet, sheetId, dev_prec[0], dev_prec[1]) for dev_prec in precision_name_gener]
 
