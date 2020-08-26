@@ -11,10 +11,10 @@ def login(url, login_name, login_pwd):
 	return jira
 
 #Return a generator
-def get_dev_estimate_precision(url, login_name, login_pwd, developer_names_list):
+def get_dev_estimate_precision(url, login_name, login_pwd, developer_names_list, project):
 	#Get project from the login method
 	jiraAPI =  login(url, login_name, login_pwd)
-	fot_project = jiraAPI.project('FOT')
+	fot_project = jiraAPI.project(project)
 	fot_project_id = fot_project.id
 	#Get last release id from the porject
 	last_release_id = fot_project.raw['versions'][len(fot_project.raw['versions'])-1]['id']
